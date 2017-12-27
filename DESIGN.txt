@@ -1,0 +1,29 @@
+Contributors: Jeremy Sharapov, Jonathan Wong
+
+Problem: We are attempting to build a primitive web browser. We would do so through the use of gtk, and webkitgtk. A simple example of a webpage using gtk and webkitgtk is at https://wiki.gnome.org/Projects/WebKitGtk/ProgrammingGuide/Tutorial.
+
+User Interface:We would be using gtk to display each tab (window). We would allow the user to close the window, and add new windows/ change the webpage (url bar would use this https://www.gtk.org/tutorial1.2/gtk_tut-14.html).
+
+Integration w/ Topics from Class:
+Each tab (this might be window) would be its own subprocess of the main process (forking). We will also allocate memory.
+We will use a semaphore to control how much tabs you can spawn.
+If we get really done, we might use shared memory to implement something like the browser remembering the last URL you were on before you closed it (browser cache).
+We can use unnamed pipes to open a link, from say Google for example, after forking into a new tab (https://developer.gnome.org/gtkmm-tutorial/stable/sec-treeview-contextmenu.html.en and http://scentric.net/tutorial/sec-selections-context-menus.html show how to implement right click context menu)
+
+Project Breakdown/ Timeline (Subject to Change):
+
+Jeremy- Create a simple program that forks processes- by Fri Dec 29th
+Create the semaphore - by Wen Jan 3rd
+Implement adding tabs - by Fri Jan 5th
+Implement closing tabs - by Fri Jan 5th
+Implement browser cache. - by Sat Jan 13th
+Jonathan-
+Get the simple browser implementation working as specified in the first link (make this a function)- by Fri Dec 29th
+Implement the GTK url bar and url submit button- by Fri Jan 5th
+Implement the right context menu- by Sun Jan 7th
+
+Together
+Implement pipes for the new tab right context menu. - by Mon Jan 15th
+Maybe creating a favorites section using file io? - by Mon Jan 15th
+
+
