@@ -1,0 +1,15 @@
+
+[Days before Monday, January 22nd 2018]
+  Jonathan
+    Need to install Ubuntu as school computers don't have required packages yet, and I can't get libwebkit2gtk running on my mac. I'm out of space on my mac so there's no option of dual booting there, and a virtualbox vm is too clunky.
+  
+[Monday, January 22nd, 2018]
+  Jonathan
+    I partition an older Windows computer. I find that it has an MBR partitioning system instead of a GUID partitioning system, which means I can't partition quite yet, so I download easeUS partition manager home edition, and convert a primary partition into a logical partition. A couple hours later, the installation is done. I confirm that the test code (the tutorial code) runs.
+
+[Tuesday, January 23rd, 2018]
+  Jonathan
+    [11.08AM]
+      I understand how the tutorial code works. I'm now swamped in webkitgtk documentation referral callback hell where each documentation object references another one and so on.
+      
+      
