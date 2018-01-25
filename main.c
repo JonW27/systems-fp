@@ -28,6 +28,7 @@
 
 #include <gtk/gtk.h>
 #include <string.h>
+#include <stdio.h>
 #include <webkit2/webkit2.h>
 
 
@@ -35,6 +36,7 @@ static void destroyWindowCb(GtkWidget* widget, GtkWidget* window);
 static gboolean closeWebViewCb(WebKitWebView* webView, GtkWidget* window);
 static void uriChangeCb(GtkEntry* entry, gpointer user_data);
 static void backButtonCb(GtkButton* button, gpointer user_data);
+static void forwardButtonCb(GtkButton* button, gpointer user_data);
 
 int main(int argc, char* argv[])
 {
@@ -61,7 +63,7 @@ int main(int argc, char* argv[])
     GtkWidget *forward_button = gtk_button_new_with_label("Forward");
     GtkWidget *stop_connection_button = gtk_button_new_with_label("Stop");
 
-	GtkEntryBuffer *buf = gtk_entry_buffer_new("about:tab", 10); 
+	GtkEntryBuffer *buf = gtk_entry_buffer_new("about:blank", 12); 
     GtkWidget *url_bar = gtk_entry_new_with_buffer(buf);
 
 	gtk_grid_attach(GTK_GRID(grid), back_button, 0, 0, 1, 1);
@@ -85,6 +87,7 @@ int main(int argc, char* argv[])
     
 	g_signal_connect(url_bar, "activate", G_CALLBACK(uriChangeCb), webView);
 	g_signal_connect(back_button, "clicked", G_CALLBACK(backButtonCb), webView);
+	g_signal_connect(forward_button, "clicked", G_CALLBACK(forwardButtonCb), webView);
 
     // Set up callbacks so that if either the main window or the browser instance is
     // closed, the program will exit
@@ -123,10 +126,19 @@ static gboolean closeWebViewCb(WebKitWebView* webView, GtkWidget* window)
 static void uriChangeCb(GtkEntry* entry, gpointer user_data){
 	const gchar *entry_text;
 	entry_text = gtk_entry_get_text(GTK_ENTRY(entry));
-	if(strcmp(entry_text, "about:tab") == 0){
+	if(strcmp(entry_text, "about:blank") == 0){
 		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), "https://hackthe.tech/siletto");
 	}
+	else if(strncmp(entry_text, "file://", 7) == 0){
+		// do the file shit here
+	}
+	else if(strncmp(entry_text, "localhost:", 10) == 0){
+		char txt[20];
+		sprintf(txt, "127.0.0.1:%s", (entry_text + 10)); 
+		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
+	}
 	else{
+		printf("this ran");
 		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
 	}
 }
@@ -136,5 +148,12 @@ static void backButtonCb(GtkButton* button, gpointer user_data){
 		webkit_web_view_go_back(user_data);
 	}
 }
+
+static void forwardButtonCb(GtkButton* button, gpointer user_data){
+	if(webkit_web_view_can_go_forward(user_data)){
+		webkit_web_view_go_forward(user_data);
+	}
+}
+
 		
 	
