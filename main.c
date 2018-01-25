@@ -27,11 +27,13 @@
  */
 
 #include <gtk/gtk.h>
+#include <string.h>
 #include <webkit2/webkit2.h>
 
 
 static void destroyWindowCb(GtkWidget* widget, GtkWidget* window);
 static gboolean closeWebViewCb(WebKitWebView* webView, GtkWidget* window);
+static void uriChangeCb(GtkEntry * entry, gpointer user_data);
 
 int main(int argc, char* argv[])
 {
@@ -49,20 +51,30 @@ int main(int argc, char* argv[])
     
     gtk_container_add(GTK_CONTAINER(main_window), GTK_WIDGET(box));
 
-    GtkWidget *web_view = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(web_view));
+	GtkWidget *grid = gtk_grid_new();
+	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(grid));
 
     // create url_bar and add to grid
 
     GtkWidget *back_button = gtk_button_new_with_label("Back");
     GtkWidget *forward_button = gtk_button_new_with_label("Forward");
     GtkWidget *stop_connection_button = gtk_button_new_with_label("Stop");
-    GtkWidget *url_bar = gtk_entry_new();
 
-    gtk_box_pack_start(GTK_BOX(box), back_button, FALSE, FALSE, 0);
+	GtkEntryBuffer *buf = gtk_entry_buffer_new("about:tab", 10); 
+    GtkWidget *url_bar = gtk_entry_new_with_buffer(buf);
+
+	gtk_grid_attach(GTK_GRID(grid), back_button, 0, 0, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), forward_button, 1, 0, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), stop_connection_button, 2, 0, 1, 1);
+	gtk_grid_attach(GTK_GRID(grid), url_bar, 0, 1, 4, 1);
+
+    /*gtk_box_pack_start(GTK_BOX(box), back_button, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), forward_button, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(box), stop_connection_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box), url_bar, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(box), url_bar, FALSE, FALSE, 0);*/
+
+	//GtkWidget *web_view = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    //gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(web_view));
 
     // Create a browser instance and put in main window
     WebKitWebView *webView = WEBKIT_WEB_VIEW(webkit_web_view_new());
@@ -70,6 +82,7 @@ int main(int argc, char* argv[])
     //[]gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(webView));
     gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(webView), TRUE, TRUE, 20);
     
+	g_signal_connect(url_bar, "activate", G_CALLBACK(uriChangeCb), webView);
 
     // Set up callbacks so that if either the main window or the browser instance is
     // closed, the program will exit
@@ -77,7 +90,7 @@ int main(int argc, char* argv[])
     g_signal_connect(webView, "close", G_CALLBACK(closeWebViewCb), main_window);
 
     // Load a web page into the browser instance
-    webkit_web_view_load_uri(webView, "http://webkitgtk.org");
+    webkit_web_view_load_uri(webView, "https://hackthe.tech/siletto");
 
     // Make sure that when the browser area becomes visible, it will get mouse
     // and keyboard events
@@ -103,4 +116,15 @@ static gboolean closeWebViewCb(WebKitWebView* webView, GtkWidget* window)
     // change this because program exits when tab is closed for now
     gtk_widget_destroy(window);
     return TRUE;
+}
+
+static void uriChangeCb(GtkEntry* entry, gpointer user_data){
+	const gchar *entry_text;
+	entry_text = gtk_entry_get_text(GTK_ENTRY(entry));
+	if(strcmp(entry_text, "about:tab") == 0){
+		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), "https://hackthe.tech/siletto");
+	}
+	else{
+		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
+	}
 }
