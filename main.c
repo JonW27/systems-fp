@@ -33,7 +33,8 @@
 
 static void destroyWindowCb(GtkWidget* widget, GtkWidget* window);
 static gboolean closeWebViewCb(WebKitWebView* webView, GtkWidget* window);
-static void uriChangeCb(GtkEntry * entry, gpointer user_data);
+static void uriChangeCb(GtkEntry* entry, gpointer user_data);
+static void backButtonCb(GtkButton* button, gpointer user_data);
 
 int main(int argc, char* argv[])
 {
@@ -83,11 +84,12 @@ int main(int argc, char* argv[])
     gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(webView), TRUE, TRUE, 20);
     
 	g_signal_connect(url_bar, "activate", G_CALLBACK(uriChangeCb), webView);
+	g_signal_connect(back_button, "clicked", G_CALLBACK(backButtonCb), webView);
 
     // Set up callbacks so that if either the main window or the browser instance is
     // closed, the program will exit
     g_signal_connect(main_window, "destroy", G_CALLBACK(destroyWindowCb), NULL);
-    g_signal_connect(webView, "close", G_CALLBACK(closeWebViewCb), main_window);
+    g_signal_connect(webView, "close", G_CALLBACK(closeWebViewCb), webView);
 
     // Load a web page into the browser instance
     webkit_web_view_load_uri(webView, "https://hackthe.tech/siletto");
@@ -128,3 +130,11 @@ static void uriChangeCb(GtkEntry* entry, gpointer user_data){
 		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
 	}
 }
+
+static void backButtonCb(GtkButton* button, gpointer user_data){
+	if(webkit_web_view_can_go_back(user_data)){
+		webkit_web_view_go_back(user_data);
+	}
+}
+		
+	
