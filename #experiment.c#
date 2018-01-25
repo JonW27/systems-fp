@@ -43,15 +43,12 @@ int main(int argc, char* argv[])
     gtk_window_set_default_size(GTK_WINDOW(main_window), 800, 600);
 
     // create the gtk box that'll set the layout and put box in window
-    GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-
-    //[]gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
+    GtkWidget *box = gtk_grid_new();
     
     gtk_container_add(GTK_CONTAINER(main_window), GTK_WIDGET(box));
 
-    GtkWidget *web_view = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(web_view));
-
+    GtkWidget *web_view = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    //gtk_box_set_homogeneous(GTK_BOX(web_view), TRUE);
     // create url_bar and add to grid
 
     GtkWidget *back_button = gtk_button_new_with_label("Back");
@@ -59,17 +56,17 @@ int main(int argc, char* argv[])
     GtkWidget *stop_connection_button = gtk_button_new_with_label("Stop");
     GtkWidget *url_bar = gtk_entry_new();
 
-    gtk_box_pack_start(GTK_BOX(box), back_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box), forward_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box), stop_connection_button, FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(box), url_bar, FALSE, FALSE, 0);
-
+    gtk_grid_attach(GTK_GRID(box), back_button, 0, 0, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(box), forward_button, back_button, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(box), stop_connection_button, forward_button, GTK_POS_RIGHT, 1, 1);
+    gtk_grid_attach_next_to(GTK_GRID(box), url_bar, stop_connection_button, GTK_POS_RIGHT, 4, 1);
+    gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(web_view));
     // Create a browser instance and put in main window
+    
+    
     WebKitWebView *webView = WEBKIT_WEB_VIEW(webkit_web_view_new());
-    
-    //[]gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(webView));
-    gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(webView), TRUE, TRUE, 20);
-    
+    gtk_box_set_homogeneous(GTK_BOX(web_view), TRUE);
+    gtk_container_add(GT
 
     // Set up callbacks so that if either the main window or the browser instance is
     // closed, the program will exit
