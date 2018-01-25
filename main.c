@@ -137,16 +137,15 @@ static void uriChangeCb(GtkEntry* entry, gpointer user_data){
 	if(strcmp(entry_text, "about:blank") == 0){
 		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), "https://hackthe.tech/siletto");
 	}
-	else if(strncmp(entry_text, "file://", 7) == 0){
+	/*else if(strncmp(entry_text, "file://", 7) == 0){
 		// do the file shit here
-	}
+	}*/
 	else if(strncmp(entry_text, "localhost:", 10) == 0){
 		char txt[20];
 		sprintf(txt, "127.0.0.1:%s", (entry_text + 10)); 
 		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
 	}
 	else{
-		printf("this ran");
 		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
 	}
 }
