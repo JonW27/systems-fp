@@ -47,12 +47,20 @@ int main(int argc, char* argv[])
     GtkWidget *main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_default_size(GTK_WINDOW(main_window), 800, 600);
 
+
+    GtkWidget *notebook = gtk_notebook_new();
+
+    GtkWidget *label = gtk_label_new ("test");
+    
     // create the gtk box that'll set the layout and put box in window
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 
+
+    gtk_notebook_append_page(GTK_NOTEBOOK (notebook), box, label);
+
     //[]gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
     
-    gtk_container_add(GTK_CONTAINER(main_window), GTK_WIDGET(box));
+    gtk_container_add(GTK_CONTAINER(main_window), GTK_WIDGET(notebook));
 
 	GtkWidget *grid = gtk_grid_new();
 	gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(grid));
