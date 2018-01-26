@@ -11,5 +11,24 @@
   Jonathan
     [11.08AM]
       I understand how the tutorial code works. I'm now swamped in webkitgtk documentation referral callback hell where each documentation object references another one and so on.
+    [Rest of Day]
+      Learns how GTK layout is extremely frustrating. Everybody refers you to glade, which mac binaries look really old, like XP level old. GtkBoxes have one row and one column with equal spacing, GtkGrids allow dynamic, but apparently WebKitWebView doesn't have a set spacing which means I have to fiddle with this URL bar for the whole day. There are no examples that demonstrate this, except PyGTK which probably dones background work to fix things. Open stackoverflow question where someone immediately refers me to glade.
+      
+[Wednesday, January 24th, 2018]
+  Jonathan
+    [~10AMish]
+      Arrive at Dojo. Attempt to deal with url bar. Finally gets workable layout-ish two hours later.
+    [1PM-3PM]
+      Begins work on signals and processes. Looks into GTK signal theory. Enable buttons to work.
+    [4PM]
+      Testrun on localhost flask app. Confirm it works. Thinks about what elements are truly needed. Considers history, and a top application bar, but can't do the top application bar, because it requires turning the GTK_Window into a fullscale GTKApplication which would be too much work.
+    [5PM]
+      I go home.
+    [6:15PM-now, 1:50AM]
+      Do work on URIs and downloads. Won't work due to type errors. Create README, update DEVLOG, add MAKEFILE. Literally the only reliable test-runner (even that's questionable due to bad wifi signal).
+    [Some time in the future]
+      Get all the awesome stuff done. Like actual profiles.
+      
+      
       
       
