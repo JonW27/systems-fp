@@ -3,9 +3,15 @@
   Jonathan
     Need to install Ubuntu as school computers don't have required packages yet, and I can't get libwebkit2gtk running on my mac. I'm out of space on my mac so there's no option of dual booting there, and a virtualbox vm is too clunky.
   
+  Jeremy
+    "I have Ubuntu-based Bash installed on my Windows laptop; why wouldn't it work with webkitgtk?"
+  
 [Monday, January 22nd, 2018]
   Jonathan
     I partition an older Windows computer. I find that it has an MBR partitioning system instead of a GUID partitioning system, which means I can't partition quite yet, so I download easeUS partition manager home edition, and convert a primary partition into a logical partition. A couple hours later, the installation is done. I confirm that the test code (the tutorial code) runs.
+    
+  Jeremy
+    Hmm, this actually doesn't seem to be working with this version of bash; strange. Oh well, I guess I'll go about writing some filler code that we might use later.
 
 [Tuesday, January 23rd, 2018]
   Jonathan
@@ -14,7 +20,14 @@
     [Rest of Day]
       Learns how GTK layout is extremely frustrating. Everybody refers you to glade, which mac binaries look really old, like XP level old. GtkBoxes have one row and one column with equal spacing, GtkGrids allow dynamic, but apparently WebKitWebView doesn't have a set spacing which means I have to fiddle with this URL bar for the whole day. There are no examples that demonstrate this, except PyGTK which probably dones background work to fix things. Open stackoverflow question where someone immediately refers me to glade.
       
+  Jeremy
+      Alright then, I guess Bash itself won't cut it for this. I really don't feel like installing actual Ubuntu, so let's just try whatever the internet says. Five wasted hours attempting to use Xming and Sys2 later, and nada once again.
+      
 [Wednesday, January 24th, 2018]
+   Jeremy
+      Screw it, I give up; fine I'll go install Ubuntu! Alright setup seems to be going smoothly and ... my drive won't partition? Oh what the hell? Is it because I have so much bloat from Windows over all of the years? Yeah hell no I'm not risking it; that's four years of hard work on here! I'll just grab my external hard drive and ... seriously? It shows up prominantly in Ubuntu's disk menu, but of course it is just ignored when I choose where to partition! I eventually give up and have to settle with the trial verison of Ubuntu, meaning I can't shut my computer down at all.
+
+[Thursday, January 25th, 2018]
   Jonathan
     [~10AMish]
       Arrive at Dojo. Attempt to deal with url bar. Finally gets workable layout-ish two hours later.
@@ -29,6 +42,14 @@
     [Some time in the future]
       Get all the awesome stuff done. Like actual profiles.
       
-      
-      
-      
+  Jeremy
+     [1PM]
+       Failed my Macro test, arrived at Dojo to meet up with Jonathan; holy crap this room is filled I did not think there would be this many people here!
+     [2-3:30PM]
+       Get grilled by Jonathan for being utterly useless through all of my technical issues, but also catch up on on how our project is actually going to work.
+     [3:30-5PM]
+       Make actual progress in terms of finally creating a tab, and a button to delete it. Victory is short-lived.
+     [7-10PM]
+       Apparently this stupid trial version of Ubuntu can't get anything to work; it took me an hour just to get freaking sudo apt-get update to work, another to get webkit actually installed properly, and another to try to figure out why in the world it decided to ignore the existance of webkitgtk which was clearly installed!
+     [10PM-7AM]
+       Give up on getting that to work, and resort to ssh'ing into Homer to work on the project proper. At around 2, Jonathan goes to sleep, and I think very highly of myself. Suddenly my ssh just stops working for an hour, and I rant to Adeeb until he gave me an IP address that didn't freeze everytime I did something as simple as git pull. However, once that finally happened, and I pulled, the whole program seemed to be broken and wouldn't compile. I was very confused as it was working just a few minutes ago, and now I couldn't even test all of what I was working on. I strap together some code for making multiple tabs, unsure of how effective it will actually be due to the program not compiling. I spend two hours trying to source the real issue, as what we did seemed to match the tutorial code. At around 7, I begrudgedly just pushed what I had and wrote this story of misfortune.
