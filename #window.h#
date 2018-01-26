@@ -3,67 +3,15 @@
 #include <stdio.h>
 #include <webkit2/webkit2.h>
 
-
 // window.h
+int create_window(){
 
-static void destroyWindowCb(GtkWidget* widget, GtkWidget* window)
-{
-  gtk_main_quit();
-}
+  // Create an 800x600 window that will contain the browser instance
+  GtkWidget *main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_default_size(GTK_WINDOW(main_window), 800, 600);
 
-static gboolean closeWebViewCb(WebKitWebView* webView, GtkWidget* window)
-{
-  // change this because program exits when tab is closed for now
-  //gtk_widget_destroy(window);
-  return TRUE;
-}
-
-static void uriChangeCb(GtkEntry* entry, gpointer user_data){
-	const gchar *entry_text;
-	entry_text = gtk_entry_get_text(GTK_ENTRY(entry));
-	if(strcmp(entry_text, "about:blank") == 0){
-		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), "https://hackthe.tech/siletto");
-	}
-	/*else if(strncmp(entry_text, "file://", 7) == 0){
-		// do the file shit here
-	}*/
-	else if(strncmp(entry_text, "localhost:", 10) == 0){
-		char txt[20];
-		sprintf(txt, "127.0.0.1:%s", (entry_text + 10));
-		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
-	}
-	else{
-		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
-	}
-}
-
-static void backButtonCb(GtkButton* button, gpointer user_data){
-  if(webkit_web_view_can_go_back(user_data)){
-    webkit_web_view_go_back(user_data);
-  }
-}
-
-
-static void tabRemoveCb(GtkButton* button, gpointer user_data){
-  if(gtk_notebook_get_n_pages(GTK_NOTEBOOK(user_data)) == 1){
-    gtk_main_quit();
-  }
-  else{}
-}
-
-static void tabAddCb(GtkButton* button, gpointer user_data){
-  create_window(user_data);
-}
-
-static void forwardButtonCb(GtkButton* button, gpointer user_data){
-	if(webkit_web_view_can_go_forward(user_data)){
-		webkit_web_view_go_forward(user_data);
-	}
-}
-
-
-
-int create_window(GtkWidget *notebook){
+  // create the tab manager
+  GtkWidget *notebook = gtk_notebook_new();
 
   GtkWidget *label = gtk_label_new ("test");
 
@@ -74,6 +22,8 @@ int create_window(GtkWidget *notebook){
   gtk_notebook_append_page(GTK_NOTEBOOK (notebook), box, label);
 
 
+  gtk_container_add(GTK_CONTAINER(main_window), GTK_WIDGET(notebook));
+
   GtkWidget *grid = gtk_grid_new();
   gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(grid));
 
@@ -82,8 +32,6 @@ int create_window(GtkWidget *notebook){
   GtkWidget *back_button = gtk_button_new_with_label("Back");
   GtkWidget *forward_button = gtk_button_new_with_label("Forward");
   GtkWidget *stop_connection_button = gtk_button_new_with_label("Stop");
-  GtkWidget *remove_tab_button = gtk_button_new_with_label("Close tab");
-  GtkWidget *add_tab_button = gtk_button_new_with_label("New tab");
 
   GtkEntryBuffer *buf = gtk_entry_buffer_new("about:blank", 12);
   GtkWidget *url_bar = gtk_entry_new_with_buffer(buf);
@@ -92,8 +40,6 @@ int create_window(GtkWidget *notebook){
   gtk_grid_attach(GTK_GRID(grid), forward_button, 1, 0, 1, 1);
   gtk_grid_attach(GTK_GRID(grid), stop_connection_button, 2, 0, 1, 1);
   gtk_grid_attach(GTK_GRID(grid), url_bar, 0, 1, 3, 1);
-  gtk_grid_attach(GTK_GRID(grid), remove_tab_button, 0, 2, 1, 1);
-  gtk_grid_attach(GTK_GRID(grid), add_tab_button, 1, 2, 1, 1);
 
   // Create a browser instance and put in main window
   WebKitWebView *webView = WEBKIT_WEB_VIEW(webkit_web_view_new());
@@ -104,13 +50,10 @@ int create_window(GtkWidget *notebook){
    g_signal_connect(url_bar, "activate", G_CALLBACK(uriChangeCb), webView);
    g_signal_connect(back_button, "clicked", G_CALLBACK(backButtonCb), webView);
    g_signal_connect(forward_button, "clicked", G_CALLBACK(forwardButtonCb), webView);
-   g_signal_connect(remove_tab_button, "clicked", G_CALLBACK(tabRemoveCb), notebook);
-   g_signal_connect(add_tab_button, "clicked", G_CALLBACK(tabAddCb), notebook);
-   
-   
+
   // Set up callbacks so that if either the main window or the browser instance is
   // closed, the program will exit
-
+  g_signal_connect(main_window, "destroy", G_CALLBACK(destroyWindowCb), NULL);
   g_signal_connect(webView, "close", G_CALLBACK(closeWebViewCb), webView);
 
   // Load a web page into the browser instance
@@ -120,6 +63,11 @@ int create_window(GtkWidget *notebook){
   // and keyboard events
   gtk_widget_grab_focus(GTK_WIDGET(webView));
 
- 
+  // Make sure the main window and all its contents are visible
+  gtk_widget_show_all(main_window);
+
+  // Run the main GTK+ event loop
+  gtk_main();
+
   return 0;
 }

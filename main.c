@@ -32,14 +32,9 @@
 #include <webkit2/webkit2.h>
 
 #include "callbacks.h"
-#include "window.h"
 
-int main(int argc, char* argv[])
-{
-  // Initialize GTK+
-  gtk_init(&argc, &argv);
-  create_window();
-}
+GtkWidget *notebook;
+
 
 
 static void destroyWindowCb(GtkWidget* widget, GtkWidget* window)
@@ -87,8 +82,36 @@ static void tabRemoveCb(GtkButton* button, gpointer user_data){
   else{}
 }
 
+static void tabAddCb(GtkButton* button, gpointer user_data){
+  create_window(notebook);
+}
+
 static void forwardButtonCb(GtkButton* button, gpointer user_data){
 	if(webkit_web_view_can_go_forward(user_data)){
 		webkit_web_view_go_forward(user_data);
 	}
+}
+
+
+int main(int argc, char* argv[])
+{
+  // Initialize GTK+
+  gtk_init(&argc, &argv);
+
+  // Create an 800x600 window that will contain the browser instance
+  GtkWidget *main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  gtk_window_set_default_size(GTK_WINDOW(main_window), 800, 600);
+
+  notebook = gtk_notebook_new();
+  create_window(notebook);
+
+  gtk_container_add(GTK_CONTAINER(main_window), GTK_WIDGET(notebook));
+  
+   // Make sure the main window and all its contents are visible
+  gtk_widget_show_all(main_window);
+
+  g_signal_connect(main_window, "destroy", G_CALLBACK(destroyWindowCb), NULL);
+
+  // Run the main GTK+ event loop
+  gtk_main();
 }

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <webkit2/webkit2.h>
+#include "window.h"
 
 // window.h
 int create_window(){
