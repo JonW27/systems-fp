@@ -44,12 +44,16 @@ int create_window(){
   // Create a browser instance and put in main window
   WebKitWebView *webView = WEBKIT_WEB_VIEW(webkit_web_view_new());
 
+
   //[]gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(webView));
   gtk_box_pack_start(GTK_BOX(box), GTK_WIDGET(webView), TRUE, TRUE, 20);
 
    g_signal_connect(url_bar, "activate", G_CALLBACK(uriChangeCb), webView);
    g_signal_connect(back_button, "clicked", G_CALLBACK(backButtonCb), webView);
    g_signal_connect(forward_button, "clicked", G_CALLBACK(forwardButtonCb), webView);
+   g_signal_connect(stop_connection_button, "clicked", G_CALLBACK(stopConnectionButtonCb), webView);
+
+   g_signal_connect(webView, "navigation-policy-decision-requested", G_CALLBACK(uriUpdateCb), url_bar);
 
   // Set up callbacks so that if either the main window or the browser instance is
   // closed, the program will exit

@@ -30,6 +30,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <webkit2/webkit2.h>
+#include <unistd.h>
 
 #include "callbacks.h"
 #include "window.h"
@@ -38,7 +39,12 @@ int main(int argc, char* argv[])
 {
   // Initialize GTK+
   gtk_init(&argc, &argv);
-  create_window();
+
+  int child = fork();
+  if(child == 0){
+      create_window(); // spawn off separate process for each window
+  }
+  //create_menu();
 }
 
 
@@ -60,9 +66,6 @@ static void uriChangeCb(GtkEntry* entry, gpointer user_data){
 	if(strcmp(entry_text, "about:blank") == 0){
 		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), "https://hackthe.tech/siletto");
 	}
-	/*else if(strncmp(entry_text, "file://", 7) == 0){
-		// do the file shit here
-	}*/
 	else if(strncmp(entry_text, "localhost:", 10) == 0){
 		char txt[20];
 		sprintf(txt, "127.0.0.1:%s", (entry_text + 10));
@@ -91,4 +94,25 @@ static void forwardButtonCb(GtkButton* button, gpointer user_data){
 	if(webkit_web_view_can_go_forward(user_data)){
 		webkit_web_view_go_forward(user_data);
 	}
+}
+
+static void stopConnectionButtonCb(GtkButton* button, gpointer user_data){
+	if(webkit_web_view_is_loading(user_data)){
+		webkit_web_view_stop_loading(user_data);
+	}
+}
+
+// this function not only handles uri updating of the uri bar, but handles downloading
+// files it obviously is not good at reading
+static void uriUpdateCb(WebKitWebView* web_view, WebKitWebFrame* frame, WebkitNetworkRequest* request, WebkitWebNavigationAction* navigation_action, WebkitWebPolicyDecision* policy_decision, gpointer user_data){
+  const gchar* uri = webkit_network_request_get_uri(request);
+  char* file_type = strchr(uri, '.');
+  if(file_type && (!strcmp(file_type, ".pdf") || !strcmp(file_type, ".db") || !strcmp(file_type, ".exe") || !strcmp(file_type, ".deb") || !strcmp(file_type, ".rpm") || !strcmp(file_type, ".dmg"))){
+      // note to self: replace above if statement with a loop and a file that contains these extensions
+      webkit_web_policy_decision_download(policy_decision);
+  }
+  else{
+    webkit_web_policy_decision_use(policy_decision);
+    gtk_entry_set_text(user_data, uri);
+  }
 }
