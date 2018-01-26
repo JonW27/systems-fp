@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 
   notebook = gtk_notebook_new();
 
-  sem_wait(&s);
+  //sem_wait(&s);
   create_window(notebook, s);
 
   gtk_container_add(GTK_CONTAINER(main_window), GTK_WIDGET(notebook));

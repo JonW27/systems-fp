@@ -65,7 +65,7 @@ static void tabRemoveCb(GtkButton* button, gpointer user_data){
 static void tabAddCb(GtkButton* button, gpointer user_data){
   //sem_wait(&sem);
   create_window(user_data, sem);
-  gtk_notebook_set_show_tabs (GTK_NOTEBOOK(NoteBook), 1);
+  //gtk_notebook_set_show_tabs (GTK_NOTEBOOK(NoteBook), 1);
 }
 
 static void forwardButtonCb(GtkButton* button, gpointer user_data){
