@@ -60,8 +60,6 @@ int main(int argc, char* argv[])
    // Make sure the main window and all its contents are visible
   gtk_widget_show_all(main_window);
 
-  g_signal_connect(main_window, "destroy", G_CALLBACK(destroyWindowCb), NULL);
-
   // Run the main GTK+ event loop
   gtk_main();
 }

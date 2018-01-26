@@ -54,7 +54,7 @@ static void tabRemoveCb(GtkButton* button, gpointer user_data){
     gtk_main_quit();
   }
   else{
-    gtk_notebook_detach_tab (GTK_NOTEBOOK(user_data), gtk_widget_get_ancestor (button, GtkBox));
+    gtk_notebook_detach_tab (GTK_NOTEBOOK(user_data), gtk_widget_get_ancestor (GTK_WIDGET(button), GTK_TYPE_BOX));
     sem_post(&sem);
   }
 }
@@ -62,7 +62,7 @@ static void tabRemoveCb(GtkButton* button, gpointer user_data){
 
 static void tabAddCb(GtkButton* button, gpointer user_data){
   sem_wait(&sem);
-  create_window(user_data);
+  create_window(user_data, sem);
 }
 
 static void forwardButtonCb(GtkButton* button, gpointer user_data){
@@ -122,7 +122,8 @@ int create_window(GtkWidget *notebook, sem_t s){
   // Set up callbacks so that if either the main window or the browser instance is
   // closed, the program will exit
 
-  g_signal_connect(webView, "close", G_CALLBACK(closeWebViewCb), webView);
+   g_signal_connect(gtk_widget_get_toplevel(GTK_WIDGET(webView)), "destroy", G_CALLBACK(destroyWindowCb), NULL);
+   g_signal_connect(GTK_WIDGET(webView), "close", G_CALLBACK(closeWebViewCb), webView);
 
   // Load a web page into the browser instance
   webkit_web_view_load_uri(webView, "https://hackthe.tech/siletto");
