@@ -27,6 +27,7 @@ We hold all of these V A L U E S dear, crafting a perfectly exquisite browser ex
 * the layout doesn't look too terrible
 * it has multiprocess architecture
 * it looks beautiful
+* Don't forget everyone's favorite https://!
 
 ## I N S T A L L I N G
 We're too lazy to create a .deb file.
