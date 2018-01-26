@@ -2,9 +2,14 @@
 #include <string.h>
 #include <stdio.h>
 #include <webkit2/webkit2.h>
-
+#include <semaphore.h>
+#include <sys/sem.h>
+#define KEY 12345
+#include "callbacks.h"
 
 // window.h
+
+sem_t sem;
 
 static void destroyWindowCb(GtkWidget* widget, GtkWidget* window)
 {
@@ -48,10 +53,15 @@ static void tabRemoveCb(GtkButton* button, gpointer user_data){
   if(gtk_notebook_get_n_pages(GTK_NOTEBOOK(user_data)) == 1){
     gtk_main_quit();
   }
-  else{}
+  else{
+    gtk_notebook_detach_tab (GTK_NOTEBOOK(user_data), gtk_widget_get_ancestor (button, GtkBox));
+    sem_post(&sem);
+  }
 }
 
+
 static void tabAddCb(GtkButton* button, gpointer user_data){
+  sem_wait(&sem);
   create_window(user_data);
 }
 
@@ -63,8 +73,8 @@ static void forwardButtonCb(GtkButton* button, gpointer user_data){
 
 
 
-int create_window(GtkWidget *notebook){
-
+int create_window(GtkWidget *notebook, sem_t s){
+  sem = s;
   GtkWidget *label = gtk_label_new ("test");
 
   // create the gtk box that'll set the layout and put box in window
@@ -72,7 +82,8 @@ int create_window(GtkWidget *notebook){
 
 
   gtk_notebook_append_page(GTK_NOTEBOOK (notebook), box, label);
-
+  gtk_notebook_next_page (GTK_NOTEBOOK(notebook));
+ 
 
   GtkWidget *grid = gtk_grid_new();
   gtk_container_add(GTK_CONTAINER(box), GTK_WIDGET(grid));

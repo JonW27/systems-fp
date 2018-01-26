@@ -30,80 +30,30 @@
 #include <string.h>
 #include <stdio.h>
 #include <webkit2/webkit2.h>
+#include <semaphore.h>
+#include <sys/sem.h>
 
 #include "callbacks.h"
 
 GtkWidget *notebook;
-
-
-
-static void destroyWindowCb(GtkWidget* widget, GtkWidget* window)
-{
-  gtk_main_quit();
-}
-
-static gboolean closeWebViewCb(WebKitWebView* webView, GtkWidget* window)
-{
-  // change this because program exits when tab is closed for now
-  //gtk_widget_destroy(window);
-  return TRUE;
-}
-
-static void uriChangeCb(GtkEntry* entry, gpointer user_data){
-	const gchar *entry_text;
-	entry_text = gtk_entry_get_text(GTK_ENTRY(entry));
-	if(strcmp(entry_text, "about:blank") == 0){
-		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), "https://hackthe.tech/siletto");
-	}
-	/*else if(strncmp(entry_text, "file://", 7) == 0){
-		// do the file shit here
-	}*/
-	else if(strncmp(entry_text, "localhost:", 10) == 0){
-		char txt[20];
-		sprintf(txt, "127.0.0.1:%s", (entry_text + 10));
-		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
-	}
-	else{
-		webkit_web_view_load_uri(WEBKIT_WEB_VIEW(user_data), entry_text);
-	}
-}
-
-static void backButtonCb(GtkButton* button, gpointer user_data){
-  if(webkit_web_view_can_go_back(user_data)){
-    webkit_web_view_go_back(user_data);
-  }
-}
-
-
-static void tabRemoveCb(GtkButton* button, gpointer user_data){
-  if(gtk_notebook_get_n_pages(GTK_NOTEBOOK(user_data)) == 1){
-    gtk_main_quit();
-  }
-  else{}
-}
-
-static void tabAddCb(GtkButton* button, gpointer user_data){
-  create_window(notebook);
-}
-
-static void forwardButtonCb(GtkButton* button, gpointer user_data){
-	if(webkit_web_view_can_go_forward(user_data)){
-		webkit_web_view_go_forward(user_data);
-	}
-}
-
+sem_t s;
 
 int main(int argc, char* argv[])
 {
   // Initialize GTK+
   gtk_init(&argc, &argv);
 
+
+  sem_init(&s, 0, 6);
+  
   // Create an 800x600 window that will contain the browser instance
   GtkWidget *main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_default_size(GTK_WINDOW(main_window), 800, 600);
 
   notebook = gtk_notebook_new();
-  create_window(notebook);
+
+  sem_wait(&s);
+  create_window(notebook, s);
 
   gtk_container_add(GTK_CONTAINER(main_window), GTK_WIDGET(notebook));
   
